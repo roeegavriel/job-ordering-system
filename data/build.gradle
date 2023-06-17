@@ -1,0 +1,13 @@
+plugins {
+    id 'java-library'
+}
+
+bootJar.enabled(false)
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    implementation 'org.hibernate.validator:hibernate-validator'
+
+    runtimeOnly 'mysql:mysql-connector-java:8.+'
+}
