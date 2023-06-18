@@ -12,7 +12,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -29,8 +33,42 @@ class JobServiceTest {
     @InjectMocks
     private JobService jobService;
 
-    @BeforeEach
-    void setUp() {
+    @Nested
+    class FindByIdTests {
+
+        @BeforeEach
+        void setUp() {
+            when(jobRepository.findById(any())).thenReturn(Optional.of(Instancio.create(Job.class)));
+        }
+
+        @Test
+        @DisplayName("validate findById invokes jobRepository.findById")
+        void validateFindByIdInvokesJobRepositoryFindById() {
+            jobService.findById(23071983L);
+
+            verify(jobRepository).findById(23071983L);
+        }
+
+        @Test
+        @DisplayName("validate findById returns the job returned by jobRepository.findById")
+        void validateFindByIdReturnsCustomerReturnedByJobRepositoryFindById() {
+            Job job = Instancio.create(Job.class);
+            when(jobRepository.findById(any())).thenReturn(Optional.of(job));
+
+            Job returnedJob = jobService.findById(1L);
+
+            assertEquals(job, returnedJob);
+        }
+
+        @Test
+        @DisplayName("validate findById throws NoSuchElementException if no job returned by jobRepository.findById")
+        void validateFindByIdThrowsNoSuchElementExceptionIfNoCustomerReturnedByCustomerRepositoryFindById() {
+            when(jobRepository.findById(any())).thenReturn(Optional.empty());
+
+            NoSuchElementException noSuchElementException = assertThrows(NoSuchElementException.class, () -> jobService.findById(1L));
+
+            assertEquals("Job not found", noSuchElementException.getMessage());
+        }
     }
 
     @Nested
@@ -64,6 +102,31 @@ class JobServiceTest {
             when(jobRepository.save(any())).thenReturn(job);
 
             Job returnedJob = jobService.createJob(null);
+
+            assertEquals(job, returnedJob);
+        }
+    }
+
+    @Nested
+    class UpdateJobTests {
+
+        @Test
+        @DisplayName("validate updateJob invokes jobRepository.save")
+        void validateUpdateJobInvokesJobRepositorySave() {
+            Job job = Instancio.create(Job.class);
+
+            jobService.updateJob(job);
+
+            verify(jobRepository).save(job);
+        }
+
+        @Test
+        @DisplayName("validate updateJob returns saved job")
+        void validateUpdateJobReturnsSavedJob() {
+            Job job = Instancio.create(Job.class);
+            when(jobRepository.save(any())).thenReturn(job);
+
+            Job returnedJob = jobService.updateJob(job);
 
             assertEquals(job, returnedJob);
         }

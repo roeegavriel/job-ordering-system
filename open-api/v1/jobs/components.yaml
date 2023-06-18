@@ -25,6 +25,9 @@ jobData:
 jobCreateData:
   allOf:
     - $ref: '#/jobData'
+jobUpdateData:
+  allOf:
+    - $ref: '#/jobData'
 createdEntityId:
   allOf:
     - $ref: '#/id'

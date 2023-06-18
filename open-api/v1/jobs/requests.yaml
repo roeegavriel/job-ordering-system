@@ -1,3 +1,22 @@
+job:
+  put:
+    summary: update a job
+    tags:
+      - jobsV1
+    operationId: update
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+    requestBody:
+      $ref: '../jobs/parameters.yaml#/body/jobUpdateRequest'
+    responses:
+      200:
+        description: Job updated
+      400:
+        description: Bad request
+      404:
+        description: Job was not found
+      500:
+        description: Internal server error
 jobs:
   post:
     summary: create a job

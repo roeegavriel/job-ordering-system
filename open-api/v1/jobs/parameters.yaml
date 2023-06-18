@@ -5,3 +5,9 @@ body:
       application/json:
         schema:
           $ref: '../jobs/components.yaml#/jobCreateData'
+  jobUpdateRequest:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../jobs/components.yaml#/jobUpdateData'

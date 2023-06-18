@@ -8,5 +8,7 @@ servers:
     description: Local server for debugging
 
 paths:
+  /v1/jobs/{job_id}:
+    $ref: 'v1/jobs/requests.yaml#/job'
   /v1/jobs:
     $ref: 'v1/jobs/requests.yaml#/jobs'

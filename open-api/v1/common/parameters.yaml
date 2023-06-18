@@ -1,0 +1,9 @@
+path:
+  jobId:
+    in: path
+    name: job_id
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: The job id
