@@ -27,4 +27,8 @@ public class JobService {
     public Job updateJob(Job job) {
         return jobRepository.save(job);
     }
+
+    public void deleteJob(Job job) {
+        jobRepository.delete(job);
+    }
 }

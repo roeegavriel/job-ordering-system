@@ -17,6 +17,22 @@ job:
         description: Job was not found
       500:
         description: Internal server error
+  delete:
+    summary: delete a job
+    tags:
+      - jobsV1
+    operationId: delete
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+    responses:
+      200:
+        description: Job deleted
+      400:
+        description: Bad request
+      404:
+        description: Job was not found
+      500:
+        description: Internal server error
 jobs:
   post:
     summary: create a job

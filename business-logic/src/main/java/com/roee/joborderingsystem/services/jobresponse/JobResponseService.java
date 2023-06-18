@@ -11,6 +11,10 @@ public class JobResponseService {
 
     private final JobResponseRepository jobResponseRepository;
 
+    public boolean isJobRespondedTo(Job job) {
+        return jobResponseRepository.existsByJob(job);
+    }
+
     public boolean isJobAccepted(Job job) {
         return jobResponseRepository.existsByJobAndAccepted(job, true);
     }

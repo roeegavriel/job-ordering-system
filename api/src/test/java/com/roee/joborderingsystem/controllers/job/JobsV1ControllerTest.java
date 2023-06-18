@@ -2,6 +2,7 @@ package com.roee.joborderingsystem.controllers.job;
 
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommand;
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
+import com.roee.joborderingsystem.commands.deletejob.DeleteJobCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
 import com.roee.joborderingsystem.generated.server.model.CreatedEntityId;
@@ -32,6 +33,9 @@ class JobsV1ControllerTest {
 
     @Mock
     private UpdateJobCommand updateJobCommand;
+
+    @Mock
+    private DeleteJobCommand deleteJobCommand;
 
     @Mock
     private JobsV1Mapper jobsV1Mapper;
@@ -105,6 +109,28 @@ class JobsV1ControllerTest {
         @DisplayName("validate update returns 200 ok")
         void validateReturnValue() {
             ResponseEntity<Void> responseEntity = jobsV1Controller.update(1L, null);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        }
+    }
+
+    @Nested
+    class DeleteTests {
+
+        @Test
+        @DisplayName("validate delete invokes deleteJobCommand.execute")
+        void validateDeleteJobCommandInvoked() {
+            Long jobId = Instancio.create(Long.class);
+
+            jobsV1Controller.delete(jobId);
+
+            verify(deleteJobCommand).execute(jobId);
+        }
+
+        @Test
+        @DisplayName("validate delete returns 200 ok")
+        void validateReturnValue() {
+            ResponseEntity<Void> responseEntity = jobsV1Controller.delete(1L);
 
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         }

@@ -131,4 +131,18 @@ class JobServiceTest {
             assertEquals(job, returnedJob);
         }
     }
+
+    @Nested
+    class DeleteJobTests {
+
+        @Test
+        @DisplayName("validate deleteJob invokes jobRepository.delete")
+        void validateUpdateJobInvokesJobRepositorySave() {
+            Job job = Instancio.create(Job.class);
+
+            jobService.deleteJob(job);
+
+            verify(jobRepository).delete(job);
+        }
+    }
 }

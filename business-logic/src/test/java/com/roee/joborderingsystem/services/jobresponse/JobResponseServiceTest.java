@@ -27,6 +27,31 @@ class JobResponseServiceTest {
     private JobResponseService jobResponseService;
 
     @Nested
+    class IsJobRespondedToTest {
+
+        @Test
+        @DisplayName("validate isJobRespondedTo invokes jobResponseRepository.existsByJob")
+        void validateIsJobAcceptedInvokesJobResponseRepositoryExistsByJob() {
+            Job job = Instancio.create(Job.class);
+
+            jobResponseService.isJobRespondedTo(job);
+
+            verify(jobResponseRepository).existsByJob(job);
+        }
+
+        @Test
+        @DisplayName("validate isJobRespondedTo returns existsByJob response")
+        void validateIsJobRespondedToReturnValue() {
+            Boolean isRespondedTo = Instancio.create(Boolean.class);
+            when(jobResponseRepository.existsByJob(any())).thenReturn(isRespondedTo);
+
+            boolean jobRespondedTo = jobResponseService.isJobRespondedTo(null);
+
+            assertEquals(isRespondedTo, jobRespondedTo);
+        }
+    }
+
+    @Nested
     class IsJobAcceptedTests {
 
         @Test

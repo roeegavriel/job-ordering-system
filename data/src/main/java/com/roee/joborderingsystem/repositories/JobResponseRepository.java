@@ -6,5 +6,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface JobResponseRepository extends CrudRepository<JobResponse, Long> {
 
+    boolean existsByJob(Job job);
+
     boolean existsByJobAndAccepted(Job job, boolean accepted);
 }
