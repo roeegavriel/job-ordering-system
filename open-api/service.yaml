@@ -12,3 +12,8 @@ paths:
     $ref: 'v1/jobs/requests.yaml#/job'
   /v1/jobs:
     $ref: 'v1/jobs/requests.yaml#/jobs'
+  /v1/workers/{worker_id}/jobs/{job_id}/accept:
+    $ref: 'v1/workers/requests.yaml#/acceptJob'
+  /v1/workers/{worker_id}/jobs/{job_id}/reject:
+    $ref: 'v1/workers/requests.yaml#/rejectJob'
+

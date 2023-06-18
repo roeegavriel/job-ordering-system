@@ -1,0 +1,36 @@
+acceptJob:
+  post:
+    summary: accept a job
+    tags:
+      - workersV1
+    operationId: accept
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+      - $ref: '../common/parameters.yaml#/path/workerId'
+    responses:
+      200:
+        description: Job accepted
+      400:
+        description: Bad request
+      404:
+        description: Worker or Job were not found
+      500:
+        description: Internal server error
+rejectJob:
+  post:
+    summary: reject a job
+    tags:
+      - workersV1
+    operationId: reject
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+      - $ref: '../common/parameters.yaml#/path/workerId'
+    responses:
+      200:
+        description: Job rejected
+      400:
+        description: Bad request
+      404:
+        description: Worker or Job were not found
+      500:
+        description: Internal server error

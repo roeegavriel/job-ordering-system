@@ -1,16 +1,20 @@
 package com.roee.joborderingsystem.services.jobresponse;
 
 import com.roee.joborderingsystem.entities.Job;
+import com.roee.joborderingsystem.entities.JobResponse;
+import com.roee.joborderingsystem.entities.Worker;
 import com.roee.joborderingsystem.repositories.JobResponseRepository;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -25,6 +29,29 @@ class JobResponseServiceTest {
 
     @InjectMocks
     private JobResponseService jobResponseService;
+
+    @Nested
+    class CreateJobResponseTest {
+
+        @Test
+        @DisplayName("validate createJobResponse invokes jobResponseRepository.save")
+        void validateCreateJobResponseInvokesJobResponseRepositorySave() {
+            Worker worker = Instancio.create(Worker.class);
+            Job job = Instancio.create(Job.class);
+            boolean accepted = Instancio.create(boolean.class);
+
+            jobResponseService.createJobResponse(worker, job, accepted);
+
+            ArgumentCaptor<JobResponse> jobResponseArgumentCaptor = ArgumentCaptor.forClass(JobResponse.class);
+            verify(jobResponseRepository).save(jobResponseArgumentCaptor.capture());
+            JobResponse jobResponse = jobResponseArgumentCaptor.getValue();
+            assertAll(
+                () -> assertEquals(worker, jobResponse.getWorker()),
+                () -> assertEquals(job, jobResponse.getJob()),
+                () -> assertEquals(accepted, jobResponse.isAccepted())
+            );
+        }
+    }
 
     @Nested
     class IsJobRespondedToTest {
@@ -48,6 +75,32 @@ class JobResponseServiceTest {
             boolean jobRespondedTo = jobResponseService.isJobRespondedTo(null);
 
             assertEquals(isRespondedTo, jobRespondedTo);
+        }
+    }
+
+    @Nested
+    class IsJobRespondedByWorkerTests {
+
+        @Test
+        @DisplayName("validate isJobRespondedByWorker invokes jobResponseRepository.existsByJobAndWorker")
+        void validateIsJobRespondedByWorkerInvokesJobResponseRepositoryExistsByJobAndWorker() {
+            Job job = Instancio.create(Job.class);
+            Worker worker = Instancio.create(Worker.class);
+
+            jobResponseService.isJobRespondedByWorker(job, worker);
+
+            verify(jobResponseRepository).existsByJobAndWorker(job, worker);
+        }
+
+        @Test
+        @DisplayName("validate isJobRespondedByWorker returns existsByJobAndWorker response")
+        void validateIsJobRespondedByWorkerReturnValue() {
+            Boolean isRespondedByWorker = Instancio.create(Boolean.class);
+            when(jobResponseRepository.existsByJobAndWorker(any(), any())).thenReturn(isRespondedByWorker);
+
+            boolean jobRespondedByWorker = jobResponseService.isJobRespondedByWorker(null, null);
+
+            assertEquals(isRespondedByWorker, jobRespondedByWorker);
         }
     }
 

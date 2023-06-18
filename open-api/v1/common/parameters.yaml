@@ -7,3 +7,11 @@ path:
       type: integer
       format: int64
     description: The job id
+  workerId:
+    in: path
+    name: worker_id
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: The worker id
