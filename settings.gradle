@@ -1,5 +1,7 @@
 rootProject.name = 'job-ordering-system'
 
 include 'application'
+include 'open-api'
+include 'api'
+include 'business-logic'
 include 'data'
-

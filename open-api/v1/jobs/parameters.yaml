@@ -1,0 +1,7 @@
+body:
+  jobCreateRequest:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../jobs/components.yaml#/jobCreateData'

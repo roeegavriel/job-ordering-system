@@ -1,0 +1,30 @@
+id:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+jobData:
+  type: object
+  properties:
+    customerId:
+      type: integer
+      format: int64
+    category:
+      type: string
+    description:
+      type: string
+    dueDate:
+      type: string
+      format: date-time
+    paymentMethod:
+      type: string
+    price:
+      type: number
+      format: double
+jobCreateData:
+  allOf:
+    - $ref: '#/jobData'
+createdEntityId:
+  allOf:
+    - $ref: '#/id'

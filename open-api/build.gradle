@@ -1,0 +1,52 @@
+plugins {
+    id 'org.openapi.generator' version "6.6.0"
+    id 'java-library'
+}
+
+bootJar.enabled(false)
+
+ext {
+    openApiGenerateServerLocation = "${buildDir}/generated/server"
+    openApiBasePackage = rootProject.group + ".generated.server"
+    openApiSpecsLocation = "${projectDir}/service.yaml"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs "$openApiGenerateServerLocation/src/main/java/"
+        }
+    }
+}
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$openApiSpecsLocation"
+    outputDir = "$openApiGenerateServerLocation"
+    apiPackage = "${openApiBasePackage}.api"
+    invokerPackage = "${openApiBasePackage}.invoker"
+    modelPackage = "${openApiBasePackage}.model"
+
+    configOptions = [
+            useSpringBoot3          : "true",
+            dateLibrary             : "java8-localdatetime",
+            hideGenerationTimestamp : "true",
+            interfaceOnly           : "true",
+            unhandledException      : "true",
+            useTags                 : "true"
+    ]
+}
+
+task cleanAutoGenerateFiles(type: Delete) {
+    delete "$openApiGenerateServerLocation"
+}
+tasks.openApiGenerate.dependsOn tasks.cleanAutoGenerateFiles
+compileJava.dependsOn tasks.openApiGenerate
+
+dependencies {
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api "io.swagger.core.v3:swagger-annotations:${swaggerAnnotationsVersion}"
+
+    implementation "org.openapitools:jackson-databind-nullable:${jacksonDatabindNullableVersion}"
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}

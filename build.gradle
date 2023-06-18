@@ -23,11 +23,17 @@ subprojects {
             all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
         }
 
+        implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
         implementation 'com.fasterxml.jackson.core:jackson-databind'
         implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
         implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 
         testImplementation "org.junit.jupiter:junit-jupiter:${jupiterVersion}"
+        testImplementation "org.mockito:mockito-core"
+        testImplementation "org.mockito:mockito-junit-jupiter"
+        testImplementation "org.instancio:instancio-junit:${instancioVersion}"
     }
 
     test {

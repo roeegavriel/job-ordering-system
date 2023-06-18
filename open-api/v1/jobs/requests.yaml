@@ -1,0 +1,21 @@
+jobs:
+  post:
+    summary: create a job
+    tags:
+      - jobsV1
+    operationId: create
+    requestBody:
+      $ref: '../jobs/parameters.yaml#/body/jobCreateRequest'
+    responses:
+      200:
+        description: Job created id
+        content:
+          application/json:
+            schema:
+              $ref: '../jobs/components.yaml#/createdEntityId'
+      400:
+        description: Bad request
+      404:
+        description: Submitting customer not found
+      500:
+        description: Internal server error
