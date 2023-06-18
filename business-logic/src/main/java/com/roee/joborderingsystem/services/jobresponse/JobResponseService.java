@@ -7,6 +7,8 @@ import com.roee.joborderingsystem.repositories.JobResponseRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class JobResponseService {
@@ -27,5 +29,9 @@ public class JobResponseService {
 
     public boolean isJobAccepted(Job job) {
         return jobResponseRepository.existsByJobAndAccepted(job, true);
+    }
+
+    public Optional<JobResponse> getJobAcceptedResponse(Job job) {
+        return jobResponseRepository.getByJobAndAccepted(job, true);
     }
 }

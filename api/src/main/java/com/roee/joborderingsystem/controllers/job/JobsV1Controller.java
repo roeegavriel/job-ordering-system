@@ -3,11 +3,14 @@ package com.roee.joborderingsystem.controllers.job;
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommand;
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
 import com.roee.joborderingsystem.commands.deletejob.DeleteJobCommand;
+import com.roee.joborderingsystem.commands.getjob.GetJobCommand;
+import com.roee.joborderingsystem.commands.getjob.GetJobCommandResponse;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
 import com.roee.joborderingsystem.generated.server.api.JobsV1Api;
 import com.roee.joborderingsystem.generated.server.model.CreatedEntityId;
 import com.roee.joborderingsystem.generated.server.model.JobCreateData;
+import com.roee.joborderingsystem.generated.server.model.JobResponse;
 import com.roee.joborderingsystem.generated.server.model.JobUpdateData;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 public class JobsV1Controller implements JobsV1Api {
 
+    private final GetJobCommand getJobCommand;
+
     private final CreateJobCommand createJobCommand;
 
     private final UpdateJobCommand updateJobCommand;
@@ -24,6 +29,13 @@ public class JobsV1Controller implements JobsV1Api {
     private final DeleteJobCommand deleteJobCommand;
 
     private final JobsV1Mapper jobsV1Mapper;
+
+    @Override
+    public ResponseEntity<JobResponse> get(Long jobId) {
+        GetJobCommandResponse getJobCommandResponse = getJobCommand.execute(jobId);
+        JobResponse jobResponse = jobsV1Mapper.fromGetJobCommandResponse(getJobCommandResponse);
+        return ResponseEntity.ok(jobResponse);
+    }
 
     @Override
     public ResponseEntity<CreatedEntityId> create(JobCreateData jobCreateData) {

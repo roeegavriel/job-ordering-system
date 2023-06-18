@@ -14,10 +14,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -126,6 +126,32 @@ class JobResponseServiceTest {
             boolean jobAccepted = jobResponseService.isJobAccepted(null);
 
             assertEquals(isAccepted, jobAccepted);
+        }
+    }
+
+    @Nested
+    class GetJobAcceptedResponseTests {
+
+        @Test
+        @DisplayName("validate getJobAcceptedResponse invokes jobResponseRepository.getByJobAndAccepted")
+        void validateGetJobAcceptedResponseInvokesJobResponseRepositoryFindByJobAndAccepted() {
+            Job job = Instancio.create(Job.class);
+
+            jobResponseService.getJobAcceptedResponse(job);
+
+            verify(jobResponseRepository).getByJobAndAccepted(job, true);
+        }
+
+        @Test
+        @DisplayName("validate getJobAcceptedResponse return value")
+        void validateGetJobAcceptedResponseReturnValue() {
+            JobResponse jobResponse = Instancio.create(JobResponse.class);
+            when(jobResponseRepository.getByJobAndAccepted(any(), anyBoolean())).thenReturn(Optional.of(jobResponse));
+
+            Optional<JobResponse> jobAcceptedResponse = jobResponseService.getJobAcceptedResponse(null);
+
+            assertTrue(jobAcceptedResponse.isPresent());
+            assertEquals(jobResponse, jobAcceptedResponse.get());
         }
     }
 }

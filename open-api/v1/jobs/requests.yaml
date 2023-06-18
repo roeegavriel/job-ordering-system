@@ -1,4 +1,24 @@
 job:
+  get:
+    summary: get job details
+    tags:
+      - jobsV1
+    operationId: get
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+    responses:
+      200:
+        description: Job details
+        content:
+          application/json:
+            schema:
+              $ref: '../jobs/components.yaml#/jobResponse'
+      400:
+        description: Bad request
+      404:
+        description: Job was not found
+      500:
+        description: Internal server error
   put:
     summary: update a job
     tags:

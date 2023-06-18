@@ -4,6 +4,15 @@ id:
     id:
       type: integer
       format: int64
+dates:
+  type: object
+  properties:
+    created_at:
+      type: string
+      format: date-time
+    updated_at:
+      type: string
+      format: date-time
 jobData:
   type: object
   properties:
@@ -31,3 +40,12 @@ jobUpdateData:
 createdEntityId:
   allOf:
     - $ref: '#/id'
+jobResponse:
+  allOf:
+    - $ref: '#/jobData'
+    - $ref: '#/dates'
+    - type: object
+      properties:
+        acceptedWorkerId:
+          type: integer
+          format: int64

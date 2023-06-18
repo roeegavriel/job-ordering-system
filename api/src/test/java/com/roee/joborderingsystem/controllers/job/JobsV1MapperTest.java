@@ -1,8 +1,10 @@
 package com.roee.joborderingsystem.controllers.job;
 
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
+import com.roee.joborderingsystem.commands.getjob.GetJobCommandResponse;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
 import com.roee.joborderingsystem.generated.server.model.JobCreateData;
+import com.roee.joborderingsystem.generated.server.model.JobResponse;
 import com.roee.joborderingsystem.generated.server.model.JobUpdateData;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -48,6 +50,26 @@ class JobsV1MapperTest {
             () -> assertEquals(jobUpdateData.getDueDate(), updateJobCommandParameters.dueDate()),
             () -> assertEquals(jobUpdateData.getPaymentMethod(), updateJobCommandParameters.paymentMethod()),
             () -> assertEquals(jobUpdateData.getPrice(), updateJobCommandParameters.price())
+        );
+    }
+
+    @Test
+    @DisplayName("validate fromGetJobCommandResponse map correctly")
+    void validateFromGetJobCommandResponse() {
+        GetJobCommandResponse getJobCommandResponse = Instancio.create(GetJobCommandResponse.class);
+
+        JobResponse jobResponse = jobsV1Mapper.fromGetJobCommandResponse(getJobCommandResponse);
+
+        assertAll(
+            () -> assertEquals(getJobCommandResponse.category(), jobResponse.getCategory()),
+            () -> assertEquals(getJobCommandResponse.description(), jobResponse.getDescription()),
+            () -> assertEquals(getJobCommandResponse.dueDate(), jobResponse.getDueDate()),
+            () -> assertEquals(getJobCommandResponse.paymentMethod(), jobResponse.getPaymentMethod()),
+            () -> assertEquals(getJobCommandResponse.price(), jobResponse.getPrice()),
+            () -> assertEquals(getJobCommandResponse.customerId(), jobResponse.getCustomerId()),
+            () -> assertEquals(getJobCommandResponse.workerId(), jobResponse.getAcceptedWorkerId()),
+            () -> assertEquals(getJobCommandResponse.createdAt(), jobResponse.getCreatedAt()),
+            () -> assertEquals(getJobCommandResponse.updatedAt(), jobResponse.getUpdatedAt())
         );
     }
 }

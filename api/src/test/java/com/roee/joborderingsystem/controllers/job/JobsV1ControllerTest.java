@@ -3,10 +3,13 @@ package com.roee.joborderingsystem.controllers.job;
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommand;
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
 import com.roee.joborderingsystem.commands.deletejob.DeleteJobCommand;
+import com.roee.joborderingsystem.commands.getjob.GetJobCommand;
+import com.roee.joborderingsystem.commands.getjob.GetJobCommandResponse;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
 import com.roee.joborderingsystem.generated.server.model.CreatedEntityId;
 import com.roee.joborderingsystem.generated.server.model.JobCreateData;
+import com.roee.joborderingsystem.generated.server.model.JobResponse;
 import com.roee.joborderingsystem.generated.server.model.JobUpdateData;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
@@ -29,6 +32,9 @@ import static org.mockito.Mockito.when;
 class JobsV1ControllerTest {
 
     @Mock
+    private GetJobCommand getJobCommand;
+
+    @Mock
     private CreateJobCommand createJobCommand;
 
     @Mock
@@ -42,6 +48,43 @@ class JobsV1ControllerTest {
 
     @InjectMocks
     private JobsV1Controller jobsV1Controller;
+
+    @Nested
+    class GetTests {
+
+        @Test
+        @DisplayName("validate get invokes getJobCommand.execute")
+        void validateGetJobCommandInvoked() {
+            long jobId = Instancio.create(long.class);
+
+            jobsV1Controller.get(jobId);
+
+            verify(getJobCommand).execute(jobId);
+        }
+
+        @Test
+        @DisplayName("validate get invokes jobsV1Mapper.fromGetJobCommandResponse")
+        void validateFromGetJobCommandResponseInvoked() {
+            GetJobCommandResponse getJobCommandResponse = Instancio.create(GetJobCommandResponse.class);
+            when(getJobCommand.execute(anyLong())).thenReturn(getJobCommandResponse);
+
+            jobsV1Controller.get(0L);
+
+            verify(jobsV1Mapper).fromGetJobCommandResponse(getJobCommandResponse);
+        }
+
+        @Test
+        @DisplayName("validate get return value")
+        void validateReturnValue() {
+            JobResponse jobResponse = Instancio.create(JobResponse.class);
+            when(jobsV1Mapper.fromGetJobCommandResponse(any())).thenReturn(jobResponse);
+
+            ResponseEntity<JobResponse> responseEntity = jobsV1Controller.get(0L);
+
+            assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+            assertEquals(jobResponse, responseEntity.getBody());
+        }
+    }
 
     @Nested
     class CreateTests {
