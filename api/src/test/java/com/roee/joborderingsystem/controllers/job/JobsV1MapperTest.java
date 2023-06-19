@@ -2,10 +2,12 @@ package com.roee.joborderingsystem.controllers.job;
 
 import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
 import com.roee.joborderingsystem.commands.getjob.GetJobCommandResponse;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobCommandJobResponse;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
 import com.roee.joborderingsystem.generated.server.model.JobCreateData;
 import com.roee.joborderingsystem.generated.server.model.JobResponse;
 import com.roee.joborderingsystem.generated.server.model.JobUpdateData;
+import com.roee.joborderingsystem.generated.server.model.JobsResponseJobsInner;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -70,6 +72,26 @@ class JobsV1MapperTest {
             () -> assertEquals(getJobCommandResponse.workerId(), jobResponse.getAcceptedWorkerId()),
             () -> assertEquals(getJobCommandResponse.createdAt(), jobResponse.getCreatedAt()),
             () -> assertEquals(getJobCommandResponse.updatedAt(), jobResponse.getUpdatedAt())
+        );
+    }
+
+    @Test
+    @DisplayName("validate fromIndexJobCommandJobResponse map correctly")
+    void validateFromIndexJobCommandJobResponse() {
+        IndexJobCommandJobResponse indexJobCommandJobResponse = Instancio.create(IndexJobCommandJobResponse.class);
+
+        JobsResponseJobsInner JobsResponseJobsInner = jobsV1Mapper.fromIndexJobCommandJobResponse(indexJobCommandJobResponse);
+
+        assertAll(
+            () -> assertEquals(indexJobCommandJobResponse.id(), JobsResponseJobsInner.getId()),
+            () -> assertEquals(indexJobCommandJobResponse.category(), JobsResponseJobsInner.getCategory()),
+            () -> assertEquals(indexJobCommandJobResponse.description(), JobsResponseJobsInner.getDescription()),
+            () -> assertEquals(indexJobCommandJobResponse.dueDate(), JobsResponseJobsInner.getDueDate()),
+            () -> assertEquals(indexJobCommandJobResponse.paymentMethod(), JobsResponseJobsInner.getPaymentMethod()),
+            () -> assertEquals(indexJobCommandJobResponse.price(), JobsResponseJobsInner.getPrice()),
+            () -> assertEquals(indexJobCommandJobResponse.customerId(), JobsResponseJobsInner.getCustomerId()),
+            () -> assertEquals(indexJobCommandJobResponse.createdAt(), JobsResponseJobsInner.getCreatedAt()),
+            () -> assertEquals(indexJobCommandJobResponse.updatedAt(), JobsResponseJobsInner.getUpdatedAt())
         );
     }
 }

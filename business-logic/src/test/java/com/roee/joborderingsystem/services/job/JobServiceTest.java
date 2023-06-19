@@ -11,15 +11,16 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class JobServiceTest {
@@ -68,6 +69,64 @@ class JobServiceTest {
             NoSuchElementException noSuchElementException = assertThrows(NoSuchElementException.class, () -> jobService.findById(1L));
 
             assertEquals("Job not found", noSuchElementException.getMessage());
+        }
+    }
+
+    @Nested
+    class FindPageTests {
+
+        @Test
+        @DisplayName("verify findPage invokes jobRepository.findPageByCustomerId if costumerId present")
+        void verifyFindPageInvokesJobRepositoryFindPageByCustomerIdIfCostumerIdPresent() {
+            Long costumerId = Instancio.create(Long.class);
+            Integer limit = Instancio.create(Integer.class);
+            Long jobIdCourser = Instancio.create(Long.class);
+
+            jobService.findPage(costumerId, limit, jobIdCourser);
+
+            verify(jobRepository).findPageByCustomerId(costumerId, jobIdCourser, PageRequest.of(0, limit));
+            verify(jobRepository, never()).findPage(any(), any());
+        }
+
+        @Test
+        @DisplayName("verify findPage invokes jobRepository.findPage if costumerId absent")
+        void verifyFindPageInvokesJobRepositoryFindPageIfCostumerIdAbsent() {
+            Long costumerId = null;
+            Integer limit = Instancio.create(Integer.class);
+            Long jobIdCourser = Instancio.create(Long.class);
+
+            jobService.findPage(costumerId, limit, jobIdCourser);
+
+            verify(jobRepository).findPage(jobIdCourser, PageRequest.of(0, limit));
+            verify(jobRepository, never()).findPageByCustomerId(any(), any(), any());
+        }
+
+        @Test
+        @DisplayName("verify findPage return value if costumerId present")
+        void verifyFindPageReturnValueIfCostumerIdPresent() {
+            Long costumerId = Instancio.create(Long.class);
+            Integer limit = Instancio.create(Integer.class);
+            Long jobIdCourser = Instancio.create(Long.class);
+            List<Job> jobs = List.of(Instancio.create(Job.class), Instancio.create(Job.class));
+            when(jobRepository.findPageByCustomerId(any(), any(), any())).thenReturn(jobs);
+
+            List<Job> foundJobs = jobService.findPage(costumerId, limit, jobIdCourser);
+
+            assertEquals(jobs, foundJobs);
+        }
+
+        @Test
+        @DisplayName("verify findPage return value if costumerId absent")
+        void verifyFindPageReturnValueIfCostumerIdAbsent() {
+            Long costumerId = null;
+            Integer limit = Instancio.create(Integer.class);
+            Long jobIdCourser = Instancio.create(Long.class);
+            List<Job> jobs = List.of(Instancio.create(Job.class), Instancio.create(Job.class));
+            when(jobRepository.findPage(any(), any())).thenReturn(jobs);
+
+            List<Job> foundJobs = jobService.findPage(costumerId, limit, jobIdCourser);
+
+            assertEquals(jobs, foundJobs);
         }
     }
 

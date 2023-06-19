@@ -49,3 +49,17 @@ jobResponse:
         acceptedWorkerId:
           type: integer
           format: int64
+jobsResponse:
+  type: object
+  properties:
+    jobs:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/id'
+          - $ref: '#/jobData'
+          - $ref: '#/dates'
+jobsPaginationResponse:
+  allOf:
+    - $ref: '#/jobsResponse'
+    - $ref: '../common/components.yaml#/pagination'

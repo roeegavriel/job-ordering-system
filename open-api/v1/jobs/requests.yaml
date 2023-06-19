@@ -54,6 +54,26 @@ job:
       500:
         description: Internal server error
 jobs:
+  get:
+    summary: get jobs - with pagination and optional filter by business
+    tags:
+      - jobsV1
+    operationId: index
+    parameters:
+      - $ref: '../jobs/parameters.yaml#/query/customerId'
+      - $ref: '../common/parameters.yaml#/query/pageInfo'
+      - $ref: '../common/parameters.yaml#/query/pageLimit'
+    responses:
+      200:
+        description: List of jobs with nextPageInfo for pagination
+        content:
+          application/json:
+            schema:
+              $ref: '../jobs/components.yaml#/jobsPaginationResponse'
+      400:
+        description: Bad request
+      500:
+        description: Internal server error
   post:
     summary: create a job
     tags:

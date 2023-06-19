@@ -59,6 +59,22 @@ public class GenerateDevData {
             .build()
         );
 
+        Customer dannyCustomer = customerRepository.save(Customer.builder()
+            .name("Danny DeVito")
+            .address(Address.builder()
+                .street("35 Windsor Ave")
+                .suburb("McKinnon")
+                .city("Melbourne")
+                .state("VIC")
+                .postalCode("3204")
+                .build()
+            )
+            .email("roeegavriel+danny@gmail.com")
+            .mobile("03 8533 8020")
+            .business(bestServiceBusiness)
+            .build()
+        );
+
         Job designJob = jobRepository.save(Job.builder()
             .category("architecture")
             .description("design a full application architecture")
@@ -84,6 +100,15 @@ public class GenerateDevData {
             .dueDate(LocalDateTime.now().plusDays(90))
             .paymentMethod("cash")
             .price(10000).build()
+        );
+
+        Job dataJob = jobRepository.save(Job.builder()
+            .category("data")
+            .description("implement data pipeline")
+            .customer(dannyCustomer)
+            .dueDate(LocalDateTime.now().plusDays(7))
+            .paymentMethod("wire transfer")
+            .price(4999).build()
         );
 
         Business whiskyDevelopers = businessRepository.save(Business.builder()
@@ -150,5 +175,6 @@ public class GenerateDevData {
             .build()
         );
         jobResponseRepository.save(JobResponse.builder().worker(jameson).job(webSiteJob).accepted(true).build());
+        jobResponseRepository.save(JobResponse.builder().worker(jameson).job(dataJob).accepted(false).build());
     }
 }

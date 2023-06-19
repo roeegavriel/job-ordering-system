@@ -1,0 +1,5 @@
+pagination:
+  type: object
+  properties:
+    next_page_info:
+      type: string

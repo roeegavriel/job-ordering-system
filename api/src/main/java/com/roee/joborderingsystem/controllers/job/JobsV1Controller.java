@@ -5,13 +5,13 @@ import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
 import com.roee.joborderingsystem.commands.deletejob.DeleteJobCommand;
 import com.roee.joborderingsystem.commands.getjob.GetJobCommand;
 import com.roee.joborderingsystem.commands.getjob.GetJobCommandResponse;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobCommandRequestFilters;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobCommandResponse;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobsCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
 import com.roee.joborderingsystem.generated.server.api.JobsV1Api;
-import com.roee.joborderingsystem.generated.server.model.CreatedEntityId;
-import com.roee.joborderingsystem.generated.server.model.JobCreateData;
-import com.roee.joborderingsystem.generated.server.model.JobResponse;
-import com.roee.joborderingsystem.generated.server.model.JobUpdateData;
+import com.roee.joborderingsystem.generated.server.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +21,8 @@ import org.springframework.stereotype.Controller;
 public class JobsV1Controller implements JobsV1Api {
 
     private final GetJobCommand getJobCommand;
+
+    private final IndexJobsCommand indexJobsCommand;
 
     private final CreateJobCommand createJobCommand;
 
@@ -35,6 +37,15 @@ public class JobsV1Controller implements JobsV1Api {
         GetJobCommandResponse getJobCommandResponse = getJobCommand.execute(jobId);
         JobResponse jobResponse = jobsV1Mapper.fromGetJobCommandResponse(getJobCommandResponse);
         return ResponseEntity.ok(jobResponse);
+    }
+
+    @Override
+    public ResponseEntity<JobsPaginationResponse> index(Long customerId, String pageInfo, Integer limit) {
+        IndexJobCommandResponse indexJobCommandResponse = indexJobsCommand.execute(new IndexJobCommandRequestFilters(customerId, limit), pageInfo);
+        return ResponseEntity.ok(new JobsPaginationResponse()
+            .jobs(indexJobCommandResponse.jobs().stream().map(jobsV1Mapper::fromIndexJobCommandJobResponse).toList())
+            .nextPageInfo(indexJobCommandResponse.pageInfo())
+        );
     }
 
     @Override

@@ -5,26 +5,29 @@ import com.roee.joborderingsystem.commands.createjob.CreateJobCommandParameters;
 import com.roee.joborderingsystem.commands.deletejob.DeleteJobCommand;
 import com.roee.joborderingsystem.commands.getjob.GetJobCommand;
 import com.roee.joborderingsystem.commands.getjob.GetJobCommandResponse;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobCommandJobResponse;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobCommandRequestFilters;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobCommandResponse;
+import com.roee.joborderingsystem.commands.indexjobs.IndexJobsCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommand;
 import com.roee.joborderingsystem.commands.updatejob.UpdateJobCommandParameters;
-import com.roee.joborderingsystem.generated.server.model.CreatedEntityId;
-import com.roee.joborderingsystem.generated.server.model.JobCreateData;
-import com.roee.joborderingsystem.generated.server.model.JobResponse;
-import com.roee.joborderingsystem.generated.server.model.JobUpdateData;
+import com.roee.joborderingsystem.generated.server.model.*;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -33,6 +36,9 @@ class JobsV1ControllerTest {
 
     @Mock
     private GetJobCommand getJobCommand;
+
+    @Mock
+    private IndexJobsCommand indexJobsCommand;
 
     @Mock
     private CreateJobCommand createJobCommand;
@@ -83,6 +89,69 @@ class JobsV1ControllerTest {
 
             assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
             assertEquals(jobResponse, responseEntity.getBody());
+        }
+    }
+
+    @Nested
+    class IndexTests {
+
+        @Test
+        @DisplayName("validate index invokes indexJobsCommand.indexJobs")
+        void validateIndexJobsCommandInvoked() {
+            IndexJobCommandResponse indexJobCommandResponse = Instancio.create(IndexJobCommandResponse.class);
+            when(indexJobsCommand.execute(any(), anyString())).thenReturn(indexJobCommandResponse);
+            Long customerId = Instancio.create(Long.class);
+            String pageInfo = Instancio.create(String.class);
+            Integer limit = Instancio.create(Integer.class);
+
+            jobsV1Controller.index(customerId, pageInfo, limit);
+
+            ArgumentCaptor<IndexJobCommandRequestFilters> indexJobCommandRequestFiltersArgumentCaptor = ArgumentCaptor.forClass(IndexJobCommandRequestFilters.class);
+            verify(indexJobsCommand).execute(indexJobCommandRequestFiltersArgumentCaptor.capture(), eq(pageInfo));
+            IndexJobCommandRequestFilters indexJobCommandRequestFilters = indexJobCommandRequestFiltersArgumentCaptor.getValue();
+            assertEquals(customerId, indexJobCommandRequestFilters.costumerId());
+            assertEquals(limit, indexJobCommandRequestFilters.limit());
+            assertEquals(0L, indexJobCommandRequestFilters.jobIdCourser());
+        }
+
+        @Test
+        @DisplayName("validate index invokes jobsV1Mapper.fromIndexJobCommandJobResponse for each job")
+        void validateFromIndexJobCommandJobResponse() {
+            IndexJobCommandJobResponse jobResponse1 = Instancio.create(IndexJobCommandJobResponse.class);
+            IndexJobCommandJobResponse jobResponse2 = Instancio.create(IndexJobCommandJobResponse.class);
+            IndexJobCommandJobResponse jobResponse3 = Instancio.create(IndexJobCommandJobResponse.class);
+            IndexJobCommandResponse indexJobCommandResponse = new IndexJobCommandResponse(List.of(jobResponse1, jobResponse2, jobResponse3), Instancio.create(String.class));
+            when(indexJobsCommand.execute(any(), anyString())).thenReturn(indexJobCommandResponse);
+            Long customerId = Instancio.create(Long.class);
+            String pageInfo = Instancio.create(String.class);
+            Integer limit = Instancio.create(Integer.class);
+
+            ResponseEntity<JobsPaginationResponse> response = jobsV1Controller.index(customerId, pageInfo, limit);
+
+            verify(jobsV1Mapper).fromIndexJobCommandJobResponse(jobResponse1);
+            verify(jobsV1Mapper).fromIndexJobCommandJobResponse(jobResponse2);
+            verify(jobsV1Mapper).fromIndexJobCommandJobResponse(jobResponse3);
+        }
+
+        @Test
+        @DisplayName("validate index return value")
+        void validateIndexReturnValue() {
+            IndexJobCommandJobResponse jobResponse1 = Instancio.create(IndexJobCommandJobResponse.class);
+            IndexJobCommandJobResponse jobResponse2 = Instancio.create(IndexJobCommandJobResponse.class);
+            IndexJobCommandResponse indexJobCommandResponse = new IndexJobCommandResponse(List.of(jobResponse1, jobResponse2), Instancio.create(String.class));
+            when(indexJobsCommand.execute(any(), anyString())).thenReturn(indexJobCommandResponse);
+            JobsResponseJobsInner jobsResponseJobsInner1 = Instancio.create(JobsResponseJobsInner.class);
+            JobsResponseJobsInner jobsResponseJobsInner2 = Instancio.create(JobsResponseJobsInner.class);
+            when(jobsV1Mapper.fromIndexJobCommandJobResponse(any())).thenReturn(jobsResponseJobsInner1, jobsResponseJobsInner2);
+            Long customerId = Instancio.create(Long.class);
+            String pageInfo = Instancio.create(String.class);
+            Integer limit = Instancio.create(Integer.class);
+
+            ResponseEntity<JobsPaginationResponse> response = jobsV1Controller.index(customerId, pageInfo, limit);
+
+            assertEquals(HttpStatus.OK, response.getStatusCode());
+            assertEquals(indexJobCommandResponse.pageInfo(), response.getBody().getNextPageInfo());
+            assertEquals(List.of(jobsResponseJobsInner1, jobsResponseJobsInner2), response.getBody().getJobs());
         }
     }
 
