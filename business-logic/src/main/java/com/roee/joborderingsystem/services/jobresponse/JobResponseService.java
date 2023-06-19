@@ -15,8 +15,8 @@ public class JobResponseService {
 
     private final JobResponseRepository jobResponseRepository;
 
-    public void createJobResponse(Worker worker, Job job, boolean accepted) {
-        jobResponseRepository.save(JobResponse.builder().worker(worker).job(job).accepted(accepted).build());
+    public JobResponse createJobResponse(Worker worker, Job job, boolean accepted) {
+        return jobResponseRepository.save(JobResponse.builder().worker(worker).job(job).accepted(accepted).build());
     }
 
     public boolean isJobRespondedTo(Job job) {

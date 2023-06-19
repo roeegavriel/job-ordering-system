@@ -51,6 +51,17 @@ class JobResponseServiceTest {
                 () -> assertEquals(accepted, jobResponse.isAccepted())
             );
         }
+
+        @Test
+        @DisplayName("validate createJobResponse response value")
+        void validateCreateJobResponseReturnValue() {
+            JobResponse jobResponse = Instancio.create(JobResponse.class);
+            when(jobResponseRepository.save(any())).thenReturn(jobResponse);
+
+            JobResponse createJobResponse = jobResponseService.createJobResponse(null, null, false);
+
+            assertEquals(jobResponse, createJobResponse);
+        }
     }
 
     @Nested

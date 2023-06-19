@@ -1,7 +1,9 @@
 package com.roee.joborderingsystem.commands.responsetojob;
 
 import com.roee.joborderingsystem.entities.Job;
+import com.roee.joborderingsystem.entities.JobResponse;
 import com.roee.joborderingsystem.entities.Worker;
+import com.roee.joborderingsystem.mail.SendJobResponseMail;
 import com.roee.joborderingsystem.services.job.JobService;
 import com.roee.joborderingsystem.services.jobresponse.JobResponseService;
 import com.roee.joborderingsystem.services.worker.WorkerService;
@@ -15,8 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -31,6 +32,9 @@ class ResponseToJobCommandTest {
 
     @Mock
     private JobResponseService jobResponseService;
+
+    @Mock
+    private SendJobResponseMail sendJobResponseMail;
 
     @InjectMocks
     private ResponseToJobCommand responseToJobCommand;
@@ -121,5 +125,21 @@ class ResponseToJobCommandTest {
         responseToJobCommand.execute(1L, 2L, accepted);
 
         verify(jobResponseService).createJobResponse(worker, job, accepted);
+    }
+
+    @Test
+    @DisplayName("validate execute invokes sendJobResponseMail.sendJobAcceptedMail")
+    void validateSendJobAcceptedMail() {
+        Boolean accepted = Instancio.create(Boolean.class);
+        when(jobResponseService.isJobRespondedByWorker(any(), any())).thenReturn(false);
+        if (accepted) {
+            when(jobResponseService.isJobAccepted(any())).thenReturn(false);
+        }
+        JobResponse jobResponse = Instancio.create(JobResponse.class);
+        when(jobResponseService.createJobResponse(any(), any(), anyBoolean())).thenReturn(jobResponse);
+
+        responseToJobCommand.execute(1L, 2L, accepted);
+
+        verify(sendJobResponseMail).sendJobAcceptedMail(jobResponse);
     }
 }
