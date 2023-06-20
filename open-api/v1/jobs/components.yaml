@@ -1,0 +1,65 @@
+id:
+  type: object
+  properties:
+    id:
+      type: integer
+      format: int64
+dates:
+  type: object
+  properties:
+    created_at:
+      type: string
+      format: date-time
+    updated_at:
+      type: string
+      format: date-time
+jobData:
+  type: object
+  properties:
+    customerId:
+      type: integer
+      format: int64
+    category:
+      type: string
+    description:
+      type: string
+    dueDate:
+      type: string
+      format: date-time
+    paymentMethod:
+      type: string
+    price:
+      type: number
+      format: double
+jobCreateData:
+  allOf:
+    - $ref: '#/jobData'
+jobUpdateData:
+  allOf:
+    - $ref: '#/jobData'
+createdEntityId:
+  allOf:
+    - $ref: '#/id'
+jobResponse:
+  allOf:
+    - $ref: '#/jobData'
+    - $ref: '#/dates'
+    - type: object
+      properties:
+        acceptedWorkerId:
+          type: integer
+          format: int64
+jobsResponse:
+  type: object
+  properties:
+    jobs:
+      type: array
+      items:
+        allOf:
+          - $ref: '#/id'
+          - $ref: '#/jobData'
+          - $ref: '#/dates'
+jobsPaginationResponse:
+  allOf:
+    - $ref: '#/jobsResponse'
+    - $ref: '../common/components.yaml#/pagination'

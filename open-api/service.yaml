@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: job ordering sysem
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local server for debugging
+
+paths:
+  /v1/jobs/{job_id}:
+    $ref: 'v1/jobs/requests.yaml#/job'
+  /v1/jobs:
+    $ref: 'v1/jobs/requests.yaml#/jobs'
+  /v1/workers/{worker_id}/jobs/{job_id}/accept:
+    $ref: 'v1/workers/requests.yaml#/acceptJob'
+  /v1/workers/{worker_id}/jobs/{job_id}/reject:
+    $ref: 'v1/workers/requests.yaml#/rejectJob'
+

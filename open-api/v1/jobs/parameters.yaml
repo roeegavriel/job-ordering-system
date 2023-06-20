@@ -1,0 +1,22 @@
+body:
+  jobCreateRequest:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../jobs/components.yaml#/jobCreateData'
+  jobUpdateRequest:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: '../jobs/components.yaml#/jobUpdateData'
+
+query:
+  customerId:
+    in: query
+    name: customer_id
+    schema:
+      type: integer
+      format: int64
+    description: filter by customer id

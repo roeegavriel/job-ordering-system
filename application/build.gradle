@@ -1,0 +1,14 @@
+plugins {
+    id 'application'
+}
+
+application {
+    mainClass = 'com.roee.joborderingsystem.Application'
+}
+
+dependencies {
+    implementation project(':api')
+    implementation project(':data')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}

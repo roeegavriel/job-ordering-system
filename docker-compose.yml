@@ -1,0 +1,18 @@
+version: '3.4'
+services:
+
+  dev-mysql:
+    image: mysql:8.0.17
+    command: --default-authentication-plugin=mysql_native_password
+    volumes:
+      - dev-mysql-data:/var/lib/dev-mysql
+    environment:
+      MYSQL_DATABASE: dev
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_USER: user
+      MYSQL_PASSWORD: userpass
+    ports:
+      - "3306:3306"
+
+volumes:
+  dev-mysql-data:

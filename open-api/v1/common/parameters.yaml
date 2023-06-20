@@ -1,0 +1,31 @@
+path:
+  jobId:
+    in: path
+    name: job_id
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: The job id
+  workerId:
+    in: path
+    name: worker_id
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: The worker id
+
+query:
+  pageInfo:
+    in: query
+    name: page_info
+    schema:
+      type: string
+    description: An encoded page info
+  pageLimit:
+    in: query
+    name: limit
+    schema:
+      type: integer
+    description: Return up to this many results per page

@@ -1,0 +1,218 @@
+{
+	"info": {
+		"_postman_id": "7b26d790-cce2-47e2-b142-9005119472d5",
+		"name": "JobOrderingSystem",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3309321"
+	},
+	"item": [
+		{
+			"name": "Get a job",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/jobs/1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"jobs",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index jobs - first call",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/jobs?limit=2&customer_id=1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "limit",
+							"value": "2",
+							"description": "Optional (default 10, max 100)"
+						},
+						{
+							"key": "customer_id",
+							"value": "1",
+							"description": "Optional"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Index jobs - further calls",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/jobs?page_info=eyJjb3N0dW1lcklkIjoxLCJsaW1pdCI6Miwiam9iSWRDb3Vyc2VyIjoyfQ==",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "page_info",
+							"value": "eyJjb3N0dW1lcklkIjoxLCJsaW1pdCI6Miwiam9iSWRDb3Vyc2VyIjoyfQ==",
+							"description": "page info value from previous call"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create a job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerId\": 1,\n    \"category\": \"new ad campaign\",\n    \"description\" : \"build ad campaign for a new product\",\n    \"dueDate\": \"2025-01-01T12:00:00\",\n    \"paymentMethod\": \"cash\",\n    \"price\": 1499\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/jobs",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update a job",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"customerId\": 1,\n    \"category\": \"new ad campaign\",\n    \"description\" : \"build ad campaign for a new product\",\n    \"dueDate\": \"2025-01-01T00:00:00\",\n    \"paymentMethod\": \"cash\",\n    \"price\": 2499\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/jobs/4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"jobs",
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a job",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/jobs/5",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"jobs",
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Accept a job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/workers/1/jobs/4/accept",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"workers",
+						"1",
+						"jobs",
+						"4",
+						"accept"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Reject a job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/workers/2/jobs/4/reject",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"workers",
+						"2",
+						"jobs",
+						"4",
+						"reject"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

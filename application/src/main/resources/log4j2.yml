@@ -1,0 +1,21 @@
+Configuration:
+  status: warn
+  name: default configuration
+  appenders:
+    Console:
+      - name: PatternAppender
+        target: SYSTEM_OUT
+        PatternLayout:
+          pattern: "%d{HH:mm:ss.SSS} %highlight{%5p}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=green bold, TRACE=blue} %style{[%t]}{magenta} %style{%c{2}}{cyan}: %m%n%wEx"
+
+  Loggers:
+    logger:
+      - name: com.roee
+        level: ${env:LOG4J2_ROEE_LEVEL:-info}
+        additivity: false
+        AppenderRef:
+          ref: ${env:LOG4J2_APPENDER:-PatternAppender}
+    Root:
+      level: ${env:LOG4J2_ROOT_LEVEL:-info}
+      AppenderRef:
+        ref: ${env:LOG4J2_APPENDER:-PatternAppender}

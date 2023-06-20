@@ -1,0 +1,42 @@
+plugins {
+    id 'org.springframework.boot' version "${springframeworkBootVersion}" apply false
+    id 'io.spring.dependency-management' version "${springDependencyManagementVersion}" apply false
+    id 'io.freefair.lombok' version "${lombokVersion}" apply false
+}
+
+group 'com.roee.joborderingsystem'
+version '1.0.0-SNAPSHOT'
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'io.freefair.lombok'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+        configurations {
+            all*.exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
+        }
+
+        implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+        annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+
+        implementation 'com.fasterxml.jackson.core:jackson-databind'
+        implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml'
+        implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+        testImplementation "org.junit.jupiter:junit-jupiter:${jupiterVersion}"
+        testImplementation "org.mockito:mockito-core"
+        testImplementation "org.mockito:mockito-junit-jupiter"
+        testImplementation "org.instancio:instancio-junit:${instancioVersion}"
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

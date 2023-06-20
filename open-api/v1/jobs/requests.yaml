@@ -1,0 +1,96 @@
+job:
+  get:
+    summary: get job details
+    tags:
+      - jobsV1
+    operationId: get
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+    responses:
+      200:
+        description: Job details
+        content:
+          application/json:
+            schema:
+              $ref: '../jobs/components.yaml#/jobResponse'
+      400:
+        description: Bad request
+      404:
+        description: Job was not found
+      500:
+        description: Internal server error
+  put:
+    summary: update a job
+    tags:
+      - jobsV1
+    operationId: update
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+    requestBody:
+      $ref: '../jobs/parameters.yaml#/body/jobUpdateRequest'
+    responses:
+      200:
+        description: Job updated
+      400:
+        description: Bad request
+      404:
+        description: Job was not found
+      500:
+        description: Internal server error
+  delete:
+    summary: delete a job
+    tags:
+      - jobsV1
+    operationId: delete
+    parameters:
+      - $ref: '../common/parameters.yaml#/path/jobId'
+    responses:
+      200:
+        description: Job deleted
+      400:
+        description: Bad request
+      404:
+        description: Job was not found
+      500:
+        description: Internal server error
+jobs:
+  get:
+    summary: get jobs - with pagination and optional filter by business
+    tags:
+      - jobsV1
+    operationId: index
+    parameters:
+      - $ref: '../jobs/parameters.yaml#/query/customerId'
+      - $ref: '../common/parameters.yaml#/query/pageInfo'
+      - $ref: '../common/parameters.yaml#/query/pageLimit'
+    responses:
+      200:
+        description: List of jobs with nextPageInfo for pagination
+        content:
+          application/json:
+            schema:
+              $ref: '../jobs/components.yaml#/jobsPaginationResponse'
+      400:
+        description: Bad request
+      500:
+        description: Internal server error
+  post:
+    summary: create a job
+    tags:
+      - jobsV1
+    operationId: create
+    requestBody:
+      $ref: '../jobs/parameters.yaml#/body/jobCreateRequest'
+    responses:
+      200:
+        description: Job created id
+        content:
+          application/json:
+            schema:
+              $ref: '../jobs/components.yaml#/createdEntityId'
+      400:
+        description: Bad request
+      404:
+        description: Submitting customer not found
+      500:
+        description: Internal server error
